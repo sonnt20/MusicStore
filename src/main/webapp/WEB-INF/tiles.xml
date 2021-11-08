@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE tiles-definitions PUBLIC
+        "-//Apache Software Foundation//DTD Tiles Configuration 3.0//EN"
+        "http://tiles.apache.org/dtds/tiles-config_3_0.dtd">
+
+<tiles-definitions>
+
+    <definition name="welcome" template="/WEB-INF/view/layout/welcome.jsp">
+        <put-attribute name="title" value="Welcome Page"/>
+        <put-attribute name="header" value="/WEB-INF/view/layout/header.jsp"/>
+        <put-attribute name="body" value="/WEB-INF/view/layout/body.jsp"/>
+        <put-attribute name="footer" value="/WEB-INF/view/layout/footer.jsp"/>
+    </definition>
+
+    <!-- Login Page  -->
+    <definition name="login.page" template="/WEB-INF/view/layout/layout_login.jsp">
+        <put-attribute name="title" value="login Page"/>
+        <put-attribute name="body" value="/WEB-INF/view/login.jsp"/>
+    </definition>
+    <!-- End Login Page  -->
+
+    <!-- Register Page  -->
+    <definition name="register.page" template="/WEB-INF/view/layout/layout_login.jsp">
+        <put-attribute name="title" value="Register Page"/>
+        <put-attribute name="body" value="/WEB-INF/view/register.jsp"/>
+    </definition>
+    <!-- End register Page  -->
+
+    <!-- Admin Page  -->
+    <definition name="admin.home.page" template="/WEB-INF/view/layout/admin/layout.jsp">
+        <put-attribute name="title" value="Home Page"/>
+        <put-attribute name="bodyWeb" value="/WEB-INF/view/admin/home.jsp"/>
+        <put-attribute name="footer" value="/WEB-INF/view/layout/admin/footer.jsp"/>
+        <put-attribute name="menu" value="/WEB-INF/view/layout/admin/menu.jsp"/>
+        <put-attribute name="topbar" value="/WEB-INF/view/layout/admin/topbar.jsp"/>
+    </definition>
+    <definition name="admin.song.page" template="/WEB-INF/view/layout/admin/layout.jsp">
+        <put-attribute name="title" value="Song Manage"/>
+        <put-attribute name="bodyWeb" value="/WEB-INF/view/admin/song.jsp"/>
+        <put-attribute name="footer" value="/WEB-INF/view/layout/admin/footer.jsp"/>
+        <put-attribute name="menu" value="/WEB-INF/view/layout/admin/menu.jsp"/>
+        <put-attribute name="topbar" value="/WEB-INF/view/layout/admin/topbar.jsp"/>
+    </definition>
+    <definition name="admin.album.page" template="/WEB-INF/view/layout/admin/layout.jsp">
+        <put-attribute name="title" value="Song Manage"/>
+        <put-attribute name="bodyWeb" value="/WEB-INF/view/admin/album.jsp"/>
+        <put-attribute name="footer" value="/WEB-INF/view/layout/admin/footer.jsp"/>
+        <put-attribute name="menu" value="/WEB-INF/view/layout/admin/menu.jsp"/>
+        <put-attribute name="topbar" value="/WEB-INF/view/layout/admin/topbar.jsp"/>
+    </definition>
+    <!-- End Admin Page  -->
+
+</tiles-definitions> 

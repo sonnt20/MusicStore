@@ -88,8 +88,7 @@
                                 </a>
                             </div>
                         </td>
-                        <%--                                <td class="text-left v-inherit">{{item.lastUpdated| date:'dd/MM/yyyy HH:mm:ss'}}</td>--%>
-                    </tr>
+                        </tr>
                     </tbody>
                 </table>
             </div>

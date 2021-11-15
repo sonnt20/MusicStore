@@ -6,8 +6,10 @@ app.controller('frameworkCtrl', ['$scope', '$http', '$timeout', '$q', function (
     $scope.imageEncode = '';
     $scope.flagModal = true;
     $scope.flagDelete = '';
+    $scope.songBase64 = '';
     $scope.songOld = {};
     $scope.new = {};
+    var folderpath = './music/';
 
     $scope.loadList = function () {
         $http.post(preUrl + "/api/song/list", "", {headers: {'Content-Type': 'application/json'}})
@@ -88,7 +90,7 @@ app.controller('frameworkCtrl', ['$scope', '$http', '$timeout', '$q', function (
             "singerId": song.singer != undefined ? song.singer.id : null,
             // Y như dòng trên
             "albumId": song.album != undefined ? song.album.id : null,
-            "linkFull": song.linkFull,
+            "linkFull":  song.linkFull,
             "description": song.description,
             "image": $scope.imageEncode,
         }
@@ -107,6 +109,8 @@ app.controller('frameworkCtrl', ['$scope', '$http', '$timeout', '$q', function (
             }, function (response) {
                 toastr.error("Thêm mới thất bại!!");
             });
+
+        $scope.songBase64 = '';
     }
 
     $scope.preEditSong = function (id) {
@@ -197,6 +201,7 @@ app.controller('frameworkCtrl', ['$scope', '$http', '$timeout', '$q', function (
                 toastr.error("Sửa thất bại!!");
             });
         $scope.songOld = {};
+        $scope.songBase64 = '';
     }
 
     $scope.preDeleteSong = function (id) {
@@ -232,6 +237,125 @@ app.controller('frameworkCtrl', ['$scope', '$http', '$timeout', '$q', function (
         $("#deleteSongModal").modal("hide");
     }
 
+    var context = new AudioContext();
+    var source = null;
+    var audioBuffer = null;
+// Converts an ArrayBuffer to base64, by converting to string
+// and then using window.btoa' to base64.
+    var bufferToBase64 = function (buffer) {
+        var bytes = new Uint8Array(buffer);
+        var len = buffer.byteLength;
+        var binary = "";
+        for (var i = 0; i < len; i++) {
+            binary += String.fromCharCode(bytes[i]);
+        }
+        return window.btoa(binary);
+    };
+    var base64ToBuffer = function (buffer) {
+        var binary = window.atob(buffer);
+        var buffer = new ArrayBuffer(binary.length);
+        var bytes = new Uint8Array(buffer);
+        for (var i = 0; i < buffer.byteLength; i++) {
+            bytes[i] = binary.charCodeAt(i) & 0xFF;
+        }
+        return buffer;
+    };
+
+    function initSound(arrayBuffer) {
+        var base64String = bufferToBase64(arrayBuffer);
+        var audioFromString = base64ToBuffer(base64String);
+        document.getElementById("encodedResult").value = base64String;
+        context.decodeAudioData(audioFromString, function (buffer) {
+            // audioBuffer is global to reuse the decoded audio later.
+            audioBuffer = buffer;
+            var buttons = document.querySelectorAll('button');
+            buttons[0].disabled = false;
+            buttons[1].disabled = false;
+        }, function (e) {
+            console.log('Error decoding file', e);
+        });
+    }
+
+    function audioBufferToWav(aBuffer) {
+        let numOfChan = aBuffer.numberOfChannels,
+            btwLength = aBuffer.length * numOfChan * 2 + 44,
+            btwArrBuff = new ArrayBuffer(btwLength),
+            btwView = new DataView(btwArrBuff),
+            btwChnls = [],
+            btwIndex,
+            btwSample,
+            btwOffset = 0,
+            btwPos = 0;
+        setUint32(0x46464952); // "RIFF"
+        setUint32(btwLength - 8); // file length - 8
+        setUint32(0x45564157); // "WAVE"
+        setUint32(0x20746d66); // "fmt " chunk
+        setUint32(16); // length = 16
+        setUint16(1); // PCM (uncompressed)
+        setUint16(numOfChan);
+        setUint32(aBuffer.sampleRate);
+        setUint32(aBuffer.sampleRate * 2 * numOfChan); // avg. bytes/sec
+        setUint16(numOfChan * 2); // block-align
+        setUint16(16); // 16-bit
+        setUint32(0x61746164); // "data" - chunk
+        setUint32(btwLength - btwPos - 4); // chunk length
+
+        for (btwIndex = 0; btwIndex < aBuffer.numberOfChannels; btwIndex++)
+            btwChnls.push(aBuffer.getChannelData(btwIndex));
+
+        while (btwPos < btwLength) {
+            for (btwIndex = 0; btwIndex < numOfChan; btwIndex++) {
+                // interleave btwChnls
+                btwSample = Math.max(-1, Math.min(1, btwChnls[btwIndex][btwOffset])); // clamp
+                btwSample = (0.5 + btwSample < 0 ? btwSample * 32768 : btwSample * 32767) | 0; // scale to 16-bit signed int
+                btwView.setInt16(btwPos, btwSample, true); // write 16-bit sample
+                btwPos += 2;
+            }
+            btwOffset++; // next source sample
+        }
+
+        let wavHdr = lamejs.WavHeader.readHeader(new DataView(btwArrBuff));
+        let wavSamples = new Int16Array(btwArrBuff, wavHdr.dataOffset, wavHdr.dataLen / 2);
+
+        wavToMp3(wavHdr.channels, wavHdr.sampleRate, wavSamples);
+
+        function setUint16(data) {
+            btwView.setUint16(btwPos, data, true);
+            btwPos += 2;
+        }
+
+        function setUint32(data) {
+            btwView.setUint32(btwPos, data, true);
+            btwPos += 4;
+        }
+    }
+
+    function wavToMp3(channels, sampleRate, samples) {
+        var buffer = [];
+        var mp3enc = new lamejs.Mp3Encoder(channels, sampleRate, 128);
+        var remaining = samples.length;
+        var samplesPerFrame = 1152;
+        for (var i = 0; remaining >= samplesPerFrame; i += samplesPerFrame) {
+            var mono = samples.subarray(i, i + samplesPerFrame);
+            var mp3buf = mp3enc.encodeBuffer(mono);
+            if (mp3buf.length > 0) {
+                buffer.push(new Int8Array(mp3buf));
+            }
+            remaining -= samplesPerFrame;
+        }
+        var d = mp3enc.flush();
+        if(d.length > 0){
+            buffer.push(new Int8Array(d));
+        }
+
+        var mp3Blob = new Blob(buffer, {type: 'audio/mp3'});
+        var bUrl = window.URL.createObjectURL(mp3Blob);
+
+        // send the download link to the console
+        console.log('mp3 download:', bUrl);
+
+    }
+
     $(document).ready(function () {
         // Hàm convert image sang base 64 (copy trên mạng kk)
         $("#imgId").change(function () {
@@ -252,7 +376,16 @@ app.controller('frameworkCtrl', ['$scope', '$http', '$timeout', '$q', function (
         $("#deleteSong").click(function () {
             $scope.deleteSong();
         })
+        $("#song-file").change(function () {
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                $scope.songBase64 = bufferToBase64(this.result);
+            };
+            reader.readAsArrayBuffer(document.getElementById("song-file").files[0]);
+        })
     });
+
+
 }]);
 
 

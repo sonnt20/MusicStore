@@ -6,6 +6,7 @@ var digitsAndSemicolon = /[1234567890;]/g;
 var digitsAndAsterisk = /[1234567890\\*]/g;
 var digitsAndSlash = /[1234567890/]/g;
 
+
 function restrictCharacters(myfield, e, restrictionType) {
     if (!e) var e = window.event
     if (e.keyCode) code = e.keyCode;

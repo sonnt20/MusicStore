@@ -129,8 +129,11 @@
                                         <label class="col-sm-5 control-label" style="line-height: 30px">link
                                             <span style="color: red" ng-if="flagModal"> (*)</span></label>
                                         <div class="col-md-6">
-                                            <input ng-model="new.linkFull" maxlength="100"
-                                                   class="form-control" required>
+<%--                                            <input type="file" id="song-file" maxlength="100" ng-model="new.linkFull"--%>
+<%--                                                   class="form-control"--%>
+<%--                                                   accept="audio/mp3,audio/*;capture=microphone"--%>
+<%--                                                   required>--%>
+                                            <input type="text" ng-model="new.linkFull" class="form-control" required>
                                         </div>
                                     </div>
                                     <br>
@@ -141,7 +144,6 @@
                                             <select ng-options="item as item.singerName for item in singers track by item.id"
                                                     style="line-height: 30px" ng-model="new.singer"
                                                     class="form-control" required>
-
                                             </select>
                                         </div>
                                     </div>

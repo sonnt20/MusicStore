@@ -1,10 +1,10 @@
 package com.btec.store.musicstore.controller.api;
 
 
+import com.btec.store.musicstore.model.dto.request.GetOneByIdRequest;
 import com.btec.store.musicstore.model.dto.request.song.AddSongRequest;
 import com.btec.store.musicstore.model.dto.request.song.DeleteSongRequest;
 import com.btec.store.musicstore.model.dto.request.song.EditSongRequest;
-import com.btec.store.musicstore.model.dto.request.GetOneByIdRequest;
 import com.btec.store.musicstore.model.entity.SongEntity;
 import com.btec.store.musicstore.repository.SongAndAlbumRepository;
 import com.btec.store.musicstore.repository.SongAndSingerRepository;
@@ -48,6 +48,9 @@ public class SongApi {
         List<SongEntity> songs = null;
         try {
             songs = songRepository.findAll();
+//            for (SongEntity song : songs) {
+//                song.setLinkFull(SongService.readFile(song.getLinkFull()));
+//            }
         } catch (Exception e) {
             e.printStackTrace();
         }

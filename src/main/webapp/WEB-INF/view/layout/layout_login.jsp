@@ -9,7 +9,7 @@
     <script src="<%=request.getContextPath()%>/assets/project/angularjs/angular-sanitize.min.js"></script>
     <script src="<%=request.getContextPath()%>/assets/project/angularjs/autocomplete/autocomplete.js"></script>
     <script src="<%=request.getContextPath()%>/assets/project/style/login/js/jquery-3.6.0.min.js"></script>
-    <link href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" rel="stylesheet" />
+    <link href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" rel="stylesheet"/>
     <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
     <link rel="stylesheet" href="<%=request.getContextPath()%>/assets/project/angularjs/autocomplete/autocomplete.css"
           type="text/css"/>

@@ -9,11 +9,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import javax.sound.sampled.AudioFileFormat.Type;
+import javax.sound.sampled.AudioFormat;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
+import static javax.sound.sampled.AudioFormat.Encoding.PCM_SIGNED;
+import static javax.sound.sampled.AudioSystem.NOT_SPECIFIED;
 
 @Controller
 @RequestMapping("/common")
@@ -21,7 +26,7 @@ public class CommonApi {
 
     private static final String SUFFIX = ".dat";
 
-    private String pathFile = "/music";
+    private static String pathFile = "/music";
 
     @RequestMapping(value = "/uploadFiles", method = RequestMethod.POST)
     public ResponseEntity<?> uploadFile(@RequestBody final MultipartFile file) {
@@ -55,17 +60,36 @@ public class CommonApi {
                     item.setName(file.getOriginalFilename());
                     item.setPath(path);
                     outputStream.close();
-                    return new ResponseEntity<>(item, HttpStatus.OK);
                 } catch (IOException e) {
-                    return new ResponseEntity<>(item, HttpStatus.OK);
+                    return new ResponseEntity<>(item, HttpStatus.INTERNAL_SERVER_ERROR);
                 }
             }
 
         } catch (Exception e) {
-            return new ResponseEntity<>(item, HttpStatus.OK);
+            return new ResponseEntity<>(item, HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return new ResponseEntity<>(item, HttpStatus.OK);
     }
+
+    @RequestMapping(value = "/uploadSong", method = RequestMethod.POST)
+    public ResponseEntity<?> uploadSong(@RequestBody MultipartFile multipartFile) {
+        if (multipartFile == null) {
+            return new ResponseEntity<>(new ResultUpload(), HttpStatus.NO_CONTENT);
+        }
+        ResultUpload item = new ResultUpload();
+        try {
+            File file = multipartToFile(multipartFile);
+            AudioFormat format =
+                    new AudioFormat(PCM_SIGNED, 44100, 8, 1, 1, 44100, false);
+            AudioSystem.write(getStream(format), Type.WAVE, file);
+            item.setPath(file.getAbsolutePath());
+        } catch (Exception e) {
+            e.getMessage();
+            return new ResponseEntity<>(item, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        return new ResponseEntity<>(item, HttpStatus.OK);
+    }
+
 
     //    ---------------------HELPER-------------------------
     private File createNewFile(String directory, String prefix) throws Exception {
@@ -75,6 +99,18 @@ public class CommonApi {
         }
         File file = File.createTempFile(prefix, SUFFIX, dirs);
         return file;
+    }
+
+    private static AudioInputStream getStream(final AudioFormat format) {
+        final int dataSize = 5000 * format.getFrameSize();
+        final InputStream in = new ByteArrayInputStream(new byte[dataSize]);
+        return new AudioInputStream(in, format, NOT_SPECIFIED);
+    }
+
+    private static File multipartToFile(MultipartFile multipart) throws IllegalStateException, IOException {
+        File convFile = new File(pathFile + multipart.getOriginalFilename());
+        multipart.transferTo(convFile);
+        return convFile;
     }
 
 }

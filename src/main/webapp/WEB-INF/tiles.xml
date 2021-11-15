@@ -50,4 +50,14 @@
     </definition>
     <!-- End Admin Page  -->
 
+    <!-- Web Page  -->
+    <definition name="web.home.page" template="/WEB-INF/view/layout/web/layout.jsp">
+        <put-attribute name="title" value="Home"/>
+        <put-attribute name="bodyWeb" value="/WEB-INF/view/web/home.jsp"/>
+        <put-attribute name="footer" value="/WEB-INF/view/layout/web/footer.jsp"/>
+<!--        <put-attribute name="menu" value="/WEB-INF/view/layout/web/menu.jsp"/>-->
+        <put-attribute name="topbar" value="/WEB-INF/view/layout/web/topbar.jsp"/>
+    </definition>
+
+    <!-- End Web Page  -->
 </tiles-definitions> 

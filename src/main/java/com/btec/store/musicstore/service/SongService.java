@@ -10,6 +10,13 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.sql.Date;
 import java.text.SimpleDateFormat;
 import java.util.Optional;
@@ -28,6 +35,8 @@ public class SongService {
 
     @Autowired
     private SongAndSingerService songAndSingerService;
+
+    private static String pathFile = "./music/";
 
     public SongEntity addNewSong(AddSongRequest request) {
         SongEntity song = new SongEntity();
@@ -85,6 +94,8 @@ public class SongService {
                 song.setReleaseDate(new Date(simpleDateFormat.parse(request.getReleaseDate()).getTime()));
             }
             if (request.getLinkFull() != null && !request.getLinkFull().trim().equals("")) {
+//                String pathFile = writeFile(request.getLinkFull());
+//                song.setLinkFull(pathFile);
                 song.setLinkFull(request.getLinkFull());
             }
             if (request.getImage() != null && !request.getImage().trim().equals("")) {
@@ -100,8 +111,43 @@ public class SongService {
             songAndSingerService.addRls(song, request.getSingerId());
 
         } catch (Exception e) {
-            logger.error(e.getMessage());
+            e.printStackTrace();
         }
         return song;
+    }
+
+    //    -----------------------------HELPER-----------------------------
+
+    public static String writeFile(String text) throws IOException {
+        BufferedWriter writer = null;
+        String fileName = null;
+        try {
+            java.util.Date now = new java.util.Date();
+            fileName = pathFile + now.getTime() + ".txt";
+
+            writer = new BufferedWriter(new FileWriter(fileName));
+            writer.write(text);
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            writer.close();
+        }
+        return fileName;
+    }
+
+    public static String readFile(String pathfile) {
+        String line = null;
+        try {
+            Path path = Paths.get(pathfile);
+
+            BufferedReader reader = Files.newBufferedReader(path);
+            line = reader.readLine();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return line;
     }
 }

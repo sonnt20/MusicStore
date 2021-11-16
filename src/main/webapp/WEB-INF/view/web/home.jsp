@@ -121,12 +121,12 @@
                             </ul>
                             <h4>{{item.name}}</h4>
                             <p>{{item.description}}</p>
-<%--                            <div class="track__option">--%>
-<%--                                <div class="jp-jplayer jplayer" data-ancestor=".jp_container-1"--%>
-<%--                                     data-url="{{item.linkFull}}"></div>--%>
-                            <audio controls autoplay="false">
-                                <source src="{{item.linkFull}}" type="audio/mpeg">
-                            </audio>
+                            <div class="track__option">
+                                <div class="jp-jplayer jplayer" data-ancestor=".jp_container-1"
+                                     data-url="{{item.linkFull}}"></div>
+<%--                            <audio controls autoplay="false">--%>
+<%--                                <source src="{{item.linkFull}}" type="audio/mpeg">--%>
+<%--                            </audio>--%>
                                 <div class="jp-audio jp_container-1" role="application" aria-label="media player">
                                     <div class="jp-gui jp-interface">
                                         <!-- Player Controls -->

@@ -122,54 +122,25 @@
                             <h4>{{item.name}}</h4>
                             <p>{{item.description}}</p>
                             <div class="track__option">
-<%--                                <div class="jp-jplayer jplayer" data-ancestor=".jp_container-1"--%>
-<%--                                     data-url="{{item.linkFull}}"></div>--%>
-                            <audio controls autoplay="false">
-                                <source src="{{item.linkFull}}" type="audio/mpeg">
-                            </audio>
-<%--                                <div class="jp-audio jp_container-1" role="application" aria-label="media player">--%>
-<%--                                    <div class="jp-gui jp-interface">--%>
-<%--                                        <!-- Player Controls -->--%>
-<%--                                        <div class="player_controls_box">--%>
-<%--                                            <button class="jp-play player_button" tabindex="0"></button>--%>
-<%--                                        </div>--%>
-<%--                                        <!-- Progress Bar -->--%>
-<%--                                        <div class="player_bars">--%>
-<%--                                            <div class="jp-progress">--%>
-<%--                                                <div class="jp-seek-bar">--%>
-<%--                                                    <div>--%>
-<%--                                                        <div class="jp-play-bar">--%>
-<%--                                                            <div class="jp-current-time" role="timer" aria-label="time">--%>
-<%--                                                                0:00--%>
-<%--                                                            </div>--%>
-<%--                                                        </div>--%>
-<%--                                                    </div>--%>
-<%--                                                </div>--%>
-<%--                                            </div>--%>
-<%--                                            <div class="jp-duration ml-auto" role="timer" aria-label="duration">00:00--%>
-<%--                                            </div>--%>
-<%--                                        </div>--%>
-<%--                                        <!-- Volume Controls -->--%>
-<%--                                        <div class="jp-volume-controls">--%>
-<%--                                            <button class="jp-mute" tabindex="0"><span--%>
-<%--                                                    class="icon_volume-high"></span></button>--%>
-<%--                                            <div class="jp-volume-bar">--%>
-<%--                                                <div class="jp-volume-bar-value" style="width: 0%;"></div>--%>
-<%--                                            </div>--%>
-<%--                                        </div>--%>
-<%--                                    </div>--%>
-<%--                                    <div class="jp-btns">--%>
-<%--                                        <a href="#"><i class="social_share"></i> Share</a>--%>
-<%--                                        <a href="#"><i class="fa fa-download"></i> Download</a>--%>
-<%--                                    </div>--%>
-<%--                                </div>--%>
+                                <div class="jp-audio jp_container-1" role="application" aria-label="media player">
+                                    <audio style="margin-right: 200px;" class="player_bars" controls autoplay="false">
+                                        <source class="jp-progress"
+                                                src="http://docs.google.com/uc?export=open&id={{item.linkFull}}"
+                                                type="audio/mp3">
+                                    </audio>
+                                    <div class="jp-btns">
+                                        <a href="#"><i class="social_share"></i> Share</a>
+                                        <a href="https://drive.google.com/uc?export=download&id={{item.linkFull}}"><i
+                                                class="fa fa-download"></i> Download</a>
+                                    </div>
+                                    <%--                                </div>--%>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
 
+                </div>
             </div>
-        </div>
     </section>
     <!-- Podcast Section End -->
 
